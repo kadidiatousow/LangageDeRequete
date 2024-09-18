@@ -1,0 +1,162 @@
+CREATE DATABASE Projet2;
+USE Projet2;
+CREATE TABLE            PRODUCTS (
+   ProductID       int PRIMARY KEY                      NOT NULL,
+   PRODUCT_NAME         NVARCHAR(40)                   NOT NULL,
+   ProductType    NVARCHAR(40)                       NOT NULL,
+   Price     	 float                     NOT NULL
+   );
+
+   CREATE TABLE            CUSTOMERS (
+  CustomerID      int PRIMARY KEY                      NOT NULL,
+   CustomerName        NVARCHAR(40)                   NOT NULL,
+   Email    NVARCHAR(40)                       NOT NULL,
+   Tel     	 NVARCHAR(40)                   NOT NULL
+   );
+
+   CREATE TABLE            ORDERS  (
+   OrderID          int      PRIMARY KEY                NOT NULL,
+   CustomerID          int                        NOT NULL,
+   OrderDate          date                      NOT NULL,
+   FOREIGN KEY (CustomerID  ) REFERENCES CUSTOMERS (CustomerID) ON DELETE NO ACTION 
+    );
+
+	CREATE TABLE            ORDER_DETAILS  (
+   OrderDetailID         int PRIMARY KEY                     NOT NULL,
+   OrderID         int                       NOT NULL,
+   ProductID      int                     NOT NULL,
+   Quantity  int NOT NULL,
+    FOREIGN KEY (OrderID  ) REFERENCES ORDERS  (OrderID ) ON DELETE NO ACTION,
+	FOREIGN KEY (ProductID  ) REFERENCES PRODUCTS (ProductID ) ON DELETE NO ACTION
+   
+  );
+
+  	CREATE TABLE            PRODUCTS_TYPES  (
+   ProductTypeID        int PRIMARY KEY                     NOT NULL,
+    ProductTypeName        NVARCHAR(40)                       NOT NULL,
+  
+   
+   
+  );
+
+
+
+ INSERT INTO PRODUCTS VALUES( 1, ' Widget A', 'Widget', 10.00)
+  INSERT INTO PRODUCTS  VALUES( 2, ' Widget B  ', 'Widget', 15.00)
+  INSERT INTO PRODUCTS VALUES( 3, ' Gadget X  ', 'Gadget', 20.00)
+  INSERT INTO PRODUCTS  VALUES( 4, ' Gadget Y  ', 'Gadget', 25.00)
+  INSERT INTO PRODUCTS  VALUES( 5, ' Machin Z  ', 'Machin', 30.00)
+
+
+INSERT INTO CUSTOMERS VALUES( 1, ' John Smith', 'john@example.com', '123-456-7890')
+  INSERT INTO CUSTOMERS VALUES( 2, ' Jane Doe', 'jane.doe@example.com', '987-654-3210 ')
+  INSERT INTO CUSTOMERS VALUES( 3, '  Alice Brown' , 'jalice.brown@example.com', '456-789-0123 ')
+
+
+
+INSERT INTO ORDERS VALUES  (101, 1,'2024-05-01')
+INSERT INTO ORDERS VALUES (102, 2, '2024-05-02')
+INSERT INTO ORDERS VALUES  (103, 3, '2024-05-01')
+
+
+INSERT INTO ORDER_DETAILS VALUES (1,  101,  1, 2)
+INSERT INTO ORDER_DETAILS VALUES (2,  101,  3,  1)
+INSERT INTO ORDER_DETAILS VALUES (3,  102,  2,  3)
+INSERT INTO ORDER_DETAILS VALUES  (4, 102, 4,  2)
+INSERT INTO ORDER_DETAILS VALUES ( 5,  103,  5,  1)
+
+INSERT INTO PRODUCTS_TYPES VALUES(1,  'Widget')
+INSERT INTO PRODUCTS_TYPES VALUES ( 2,  'Gadget')
+INSERT INTO PRODUCTS_TYPES VALUES (3,  'Doohickey')
+
+
+
+Question 1:
+   SELECT * FROM PRODUCTS;
+
+Question 2:
+   SELECT * FROM CUSTOMERS;
+
+Question 3:
+
+   SELECT * FROM ORDERS;
+
+Question 4:
+   SELECT * FROM ORDERS_DETAILS;
+
+Question 5:
+SELECT * FROM PRODUCTS_TYPES ;
+
+Question 6:
+SELECT PRODUCT_NAME , SUM(od.Quantity )
+  FROM PRODUCTS
+  JOIN 
+  ORDER_DETAILS od ON od.ProductID=od.ProductID
+  GROUP BY PRODUCT_NAME;
+
+Question 7:
+
+
+Question 8:
+SELECT c.CustomerName, COUNT(o.OrderID) AS TotalOrders
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerName
+ORDER BY TotalOrders DESC;
+
+Question 9:
+SELECT PRODUCT_NAME, SUM(od.Quantity) AS TotalQuantity
+FROM PRODUCTS 
+JOIN ORDER_DETAILS od ON od.ProductID=od.ProductID
+GROUP BY PRODUCT_NAME;
+
+Question 10:
+SELECT DISTINCT C.CustomerName
+FROM Customers C
+INNER JOIN Orders O ON C.CustomerID = O.CustomerID
+INNER JOIN ORDER_DETAILS OD ON O.OrderID = OD.OrderID
+INNER JOIN Products P ON OD.ProductID = P.ProductID
+WHERE P.PRODUCT_NAME LIKE '%widget%';
+
+Question 11:
+SELECT  C.CustomerName , SUM(PRICE) AS TOTALPRICE
+FROM Customers C
+JOIN Orders O ON C.CustomerID = O.CustomerID
+JOIN ORDER_DETAILS OD ON O.OrderID = OD.OrderID
+JOIN Products P ON OD.ProductID = P.ProductID
+WHERE P.PRODUCT_NAME LIKE '%widget%'
+AND P.PRODUCT_NAME LIKE 'Gadget'
+GROUP BY C.CustomerName;
+
+Question 12:
+SELECT  C.CustomerName, SUM (Price) AS TOTALPRICE
+FROM Customers C
+INNER JOIN Orders O ON C.CustomerID = O.CustomerID
+INNER JOIN ORDER_DETAILS OD ON O.OrderID = OD.OrderID
+INNER JOIN Products P ON OD.ProductID = P.ProductID
+WHERE P.PRODUCT_NAME LIKE '%Gadget%'
+GROUP BY C.CustomerName;
+
+Question 13:
+SELECT  C.CustomerName, SUM (Price) AS TOTALPRICE
+FROM Customers C
+INNER JOIN Orders O ON C.CustomerID = O.CustomerID
+INNER JOIN ORDER_DETAILS OD ON O.OrderID = OD.OrderID
+INNER JOIN Products P ON OD.ProductID = P.ProductID
+WHERE P.PRODUCT_NAME LIKE '%Bidules%'
+GROUP BY C.CustomerName;
+
+Question 14:
+
+SELECT c.CustomerName ,
+COUNT(DISTINCT DATE_FORMAT(o.OrderDate,'years-month-day')) AS Day_List
+FROM CUSTOMERS c
+INNER JOIN ORDERS ON c.CustomerID= o.OrderID
+GROUP BY p.PRODUCT_NAME;
+
+Question 15:
+SELECT COUNT(p.PRODUCT_NAME), SUM (Price) AS TOTALPRICE
+FROM PRODUCTS p
+WHERE P.PRODUCT_NAME LIKE '%widget%'
+AND P.PRODUCT_NAME LIKE '%Gadget%'
+GROUP BY PRODUCT_NAME;
